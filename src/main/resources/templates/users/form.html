@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${user.id != null ? 'Chỉnh sửa User' : 'Thêm User Mới'} + ' - Spring Boot CRUD'">Form User</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        .nav-link:hover {
+            color: white !important;
+        }
+        .main-content {
+            padding: 40px 0;
+        }
+        .form-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .form-control {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            padding: 12px 15px;
+        }
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .form-label {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .btn-primary {
+            background: #4285f4;
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background: #3367d6;
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 12px 30px;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-icon {
+            font-size: 3rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+        .alert {
+            border-radius: 15px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-fire me-2"></i>Firebase CRUD
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a class="nav-link" href="/users">
+                    <i class="fas fa-users me-2"></i>Danh sách Users
+                </a>
+                <a class="nav-link" href="/logout">
+                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="form-card">
+                        <!-- Form Header -->
+                        <div class="form-header">
+                            <i th:class="${user.id != null ? 'fas fa-edit' : 'fas fa-user-plus'} + ' form-icon'"></i>
+                            <h2 th:text="${user.id != null ? 'Chỉnh sửa User' : 'Thêm User Mới'}">Form Title</h2>
+                            <p class="text-muted" th:text="${user.id != null ? 'Cập nhật thông tin user trong Firebase' : 'Tạo user mới và lưu vào Firebase'}">Form description</p>
+                        </div>
+
+                        <!-- Alert Messages -->
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+
+                        <!-- User Form -->
+                        <form th:action="${user.id != null ? '/users/' + user.id : '/users'}" 
+                              th:object="${user}" method="post">
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Tên
+                                    </label>
+                                    <input type="text" class="form-control" id="name" 
+                                           th:field="*{name}" placeholder="Nhập tên user" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email
+                                    </label>
+                                    <input type="email" class="form-control" id="email" 
+                                           th:field="*{email}" placeholder="Nhập email" required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="picture" class="form-label">
+                                    <i class="fas fa-image me-2"></i>URL Ảnh đại diện
+                                </label>
+                                <input type="url" class="form-control" id="picture" 
+                                       th:field="*{picture}" placeholder="https://example.com/avatar.jpg">
+                                <div class="form-text text-light">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Để trống nếu không có ảnh đại diện
+                                </div>
+                            </div>
+
+                            <!-- Hidden fields for timestamps -->
+                            <input type="hidden" th:field="*{createdAt}">
+                            <input type="hidden" th:field="*{updatedAt}">
+
+                            <!-- Form Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="/users" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Quay lại
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i th:class="${user.id != null ? 'fas fa-save' : 'fas fa-plus'} + ' me-2'"></i>
+                                    <span th:text="${user.id != null ? 'Cập nhật' : 'Thêm mới'}">Submit</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
